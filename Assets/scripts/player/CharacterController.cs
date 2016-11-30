@@ -28,7 +28,7 @@ public class CharacterController : MonoBehaviour {
 	void Update ()
     {
         //If user right clicks
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButtonDown(1))
         {
             Debug.Log("Right clicked ");
             Vector3 target = getClickedPosition();
@@ -42,7 +42,7 @@ public class CharacterController : MonoBehaviour {
             UpdateMovement(movement.target);
             UpdateRotation(movement.target);
         }
-        movement.moveSpeed = nav.desiredVelocity.magnitude;
+        movement.moveSpeed = Vector3.Distance(transform.position, movement.target);
         animator.SetFloat("speed", movement.moveSpeed);
     }
 
@@ -56,6 +56,10 @@ public class CharacterController : MonoBehaviour {
     private void UpdateRotation(Vector3 target)
     {
         //Look at target
+        if(Vector3.Distance(target, transform.position) <= nav.stoppingDistance)
+        {
+            return;
+        }
         Vector3 dir = target - transform.position;
         dir.y = 0;
         Quaternion rotation = Quaternion.LookRotation(dir);
