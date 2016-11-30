@@ -31,7 +31,7 @@ public class FreeCamera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         currentCursorPos = Input.mousePosition;
-        Debug.Log(currentCursorPos);
+
         //Need to move camera to the left
         if(currentCursorPos.x <= mouseMove.screenOffset)
         {
