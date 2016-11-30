@@ -17,6 +17,12 @@ public class CharacterController : MonoBehaviour {
     public Movement movement = new Movement();
     private bool isRotating = false;
 
+    static int locoState = Animator.StringToHash("Base Layer.Locomotion");
+    static int pickingUpState = Animator.StringToHash("Base Layer.Pick Up");
+    static int chopDownState = Animator.StringToHash("Base Layer.Chop Down");
+
+    private AnimatorStateInfo currentState;
+
     // Use this for initialization
     void Start () {
         nav = GetComponent<NavMeshAgent>();
@@ -44,6 +50,35 @@ public class CharacterController : MonoBehaviour {
         }
         movement.moveSpeed = Vector3.Distance(transform.position, movement.target);
         animator.SetFloat("speed", movement.moveSpeed);
+
+        currentState = animator.GetCurrentAnimatorStateInfo(0);
+
+        if(currentState.nameHash == locoState)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log("Pick up !");
+                animator.SetBool("pickup", true);
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                animator.SetBool("chopdown", true);
+            }
+        }
+        if(currentState.nameHash == pickingUpState)
+        {
+            if(!animator.IsInTransition(0))
+            {
+                animator.SetBool("pickup", false);
+            }
+        }
+        if (currentState.nameHash == chopDownState)
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                animator.SetBool("chopdown", false);
+            }
+        }
     }
 
     private void UpdateMovement(Vector3 target)

@@ -25,6 +25,8 @@ public class BuildingObject : MonoBehaviour {
     public Materials materialsSetting = new Materials();
     public Transformation transformation = new Transformation();
 
+    
+
     // Use this for initialization
     void Start () {
         renderer = GetComponent<Renderer>();
