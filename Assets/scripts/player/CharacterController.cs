@@ -21,6 +21,8 @@ public class CharacterController : MonoBehaviour {
     static int pickingUpState = Animator.StringToHash("Base Layer.Pick Up");
     static int chopDownState = Animator.StringToHash("Base Layer.Chop Down");
 
+    private GameObject targetTree = null;
+
     private AnimatorStateInfo currentState;
 
     // Use this for initialization
@@ -37,6 +39,7 @@ public class CharacterController : MonoBehaviour {
         if (Input.GetMouseButtonDown(1))
         {
             Debug.Log("Right clicked ");
+            animator.SetBool("chopdown", false);
             Vector3 target = getClickedPosition();
             if (target != Vector3.zero)
             {
@@ -47,6 +50,13 @@ public class CharacterController : MonoBehaviour {
         {
             UpdateMovement(movement.target);
             UpdateRotation(movement.target);
+        }
+        else
+        {
+            if(targetTree != null)
+            {
+                animator.SetBool("chopdown", true);
+            }
         }
         movement.moveSpeed = Vector3.Distance(transform.position, movement.target);
         animator.SetFloat("speed", movement.moveSpeed);
@@ -107,6 +117,12 @@ public class CharacterController : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         { 
+            if (hit.collider.gameObject.tag == "Tree")
+            {
+                targetTree = hit.collider.gameObject;
+                hit.point.Set(hit.point.x, 0, hit.point.z);
+                return hit.point;
+            }
             if(hit.collider.gameObject.tag == "Ground")
             {
                 Debug.Log(hit.collider.gameObject.tag);
