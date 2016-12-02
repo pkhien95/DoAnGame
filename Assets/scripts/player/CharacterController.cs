@@ -42,10 +42,12 @@ public class CharacterController : MonoBehaviour {
             //destroy current tree and create the new one at the same place
             if (targetTree != null)
             {
-                ((BuildingManager)GameObject.Find("BuildingManager").GetComponent(typeof(BuildingManager))).instantiateTree(targetTree.transform.position,targetTree.transform.rotation);
+                (targetTree.GetComponent(typeof(TreeController)) as TreeController).stopChopping();
+                //((BuildingManager)GameObject.Find("BuildingManager").GetComponent(typeof(BuildingManager))).instantiateTree(targetTree.transform.position,targetTree.transform.rotation);
                 animator.SetBool("chopdown", false);
                 movement.maxDistanceToTarget = 1.5f;
-                Destroy(targetTree);
+                //Destroy(targetTree);
+                targetTree = null;
             }
             Vector3 target = getClickedPosition();
             if (target != Vector3.zero)
@@ -67,7 +69,8 @@ public class CharacterController : MonoBehaviour {
                 nav.SetDestination(transform.position);
                 movement.target = transform.position;
                 animator.SetBool("chopdown", true);
-                Destroy(targetTree, 5);
+                //Destroy(targetTree, 5);
+                ((TreeController)targetTree.GetComponent(typeof(TreeController))).startChopping();
             }
             else//tree has been chopped down
             {
