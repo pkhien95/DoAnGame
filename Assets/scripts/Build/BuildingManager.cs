@@ -4,6 +4,7 @@ using System.Collections;
 public class BuildingManager : MonoBehaviour {
     public GameObject wall;
     public GameObject turret;
+    public GameObject tree;
 
 	// Use this for initialization
 	void Start () {
@@ -21,5 +22,9 @@ public class BuildingManager : MonoBehaviour {
         {
             GameObject.Instantiate(turret, Input.mousePosition, turret.transform.rotation);
         }
+    }
+    public void instantiateTree(Vector3 position, Quaternion rotation)
+    {
+        Instantiate(tree, position, rotation);
     }
 }

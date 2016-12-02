@@ -39,13 +39,21 @@ public class CharacterController : MonoBehaviour {
         if (Input.GetMouseButtonDown(1))
         {
             Debug.Log("Right clicked ");
-            animator.SetBool("chopdown", false);
+            //destroy current tree and create the new one at the same place
+            if (targetTree != null)
+            {
+                ((BuildingManager)GameObject.Find("BuildingManager").GetComponent(typeof(BuildingManager))).instantiateTree(targetTree.transform.position,targetTree.transform.rotation);
+                animator.SetBool("chopdown", false);
+                movement.maxDistanceToTarget = 1.5f;
+                Destroy(targetTree);
+            }
             Vector3 target = getClickedPosition();
             if (target != Vector3.zero)
             {
                 movement.target = target;
             }
         }
+      
         if (Vector3.Distance(movement.target, transform.position) > movement.maxDistanceToTarget)
         {
             UpdateMovement(movement.target);
@@ -53,11 +61,20 @@ public class CharacterController : MonoBehaviour {
         }
         else
         {
-            if(targetTree != null)
+            if (targetTree != null)
             {
+                //stop moving and start chopping
+                nav.SetDestination(transform.position);
+                movement.target = transform.position;
                 animator.SetBool("chopdown", true);
+                Destroy(targetTree, 5);
+            }
+            else//tree has been chopped down
+            {
+                animator.SetBool("chopdown", false);
             }
         }
+
         movement.moveSpeed = Vector3.Distance(transform.position, movement.target);
         animator.SetFloat("speed", movement.moveSpeed);
 
@@ -120,8 +137,10 @@ public class CharacterController : MonoBehaviour {
             if (hit.collider.gameObject.tag == "Tree")
             {
                 targetTree = hit.collider.gameObject;
-                hit.point.Set(hit.point.x, 0, hit.point.z);
-                return hit.point;
+                Vector3 treeCenter = targetTree.GetComponent<BoxCollider>().center;
+                treeCenter.Set(treeCenter.x, 0, treeCenter.z);
+                //return center of tree;
+                return treeCenter + targetTree.transform.position;
             }
             if(hit.collider.gameObject.tag == "Ground")
             {
